@@ -1,29 +1,31 @@
-var compile = function (musexpr) {
-  var res = compile_aux(musexpr, 0);
-  return res.notes;
-}; 
+
 
 var max = function(a,b){
   return a > b ? a : b;
 };
 
 var pitch_to_midi = function(p){
-  var octave1 = { 
-      c: 24,
-      d: 26,	
-      e: 28,
-      f: 29,
-      g: 31,
-      a: 33,
-      b: 35
+  var letterPitch = { 
+      c: 0,
+      d: 2,	
+      e: 4,
+      f: 5,
+      g: 7,
+      a: 9,
+      b: 11
   };
 
   var note = p[0];
   var i = Number(p[1]);
 
-  return octave1[note] + (i-1) * 12;
+  return 12 + 12 * i + letterPitch[note];
 }
 
+
+var compile = function (musexpr) {
+  var res = compile_aux(musexpr, 0);
+  return res.notes;
+}; 
 
 var compile_aux = function (musexpr, start0) {
     var note, rest, res1, notes1, start1, res2, notes2, start2;
@@ -37,9 +39,14 @@ var compile_aux = function (musexpr, start0) {
         
         return {notes: [note], end: start0 + note.dur};
     }
+
     else if(musexpr.tag === 'rest'){
 	return {notes: [], end: start0 + musexpr.dur};
     } 
+
+    else if(musexpr.tag === 'repeat'){
+    }
+
     else if(musexpr.tag === 'seq'){ 
         res1 = compile_aux(musexpr.left, start0);
         notes1 = res1.notes;
