@@ -22,6 +22,16 @@ var pitch_to_midi = function(p){
 }
 
 
+var repeat_to_seq = function(section, count){
+  if(count === 1)
+	return section;
+  else
+    	return { tag:'seq', 
+                 left: section,
+                 right: repeat_to_seq(section, count-1)};
+}
+
+
 var compile = function (musexpr) {
   var res = compile_aux(musexpr, 0);
   return res.notes;
@@ -45,6 +55,7 @@ var compile_aux = function (musexpr, start0) {
     } 
 
     else if(musexpr.tag === 'repeat'){
+        return compile_aux(repeat_to_seq(musexpr.section, musexpr.count), start0);
     }
 
     else if(musexpr.tag === 'seq'){ 
@@ -71,12 +82,18 @@ var melody_mus =
     { tag: 'seq',
       left: 
        { tag: 'seq',
-         left: { tag: 'note', pitch: 'a4', dur: 250 },
+         left: { tag: 'repeat',
+  	         section: { tag: 'note', pitch: 'c4', dur: 250 },
+  	         count: 3 },
          right: { tag: 'note', pitch: 'b4', dur: 250 } },
       right:
        { tag: 'seq',
          left: { tag: 'rest', dur: 500 },
          right: { tag: 'note', pitch: 'd4', dur: 500 } } };
 
+
 console.log(melody_mus);
 console.log(compile(melody_mus));
+
+
+
