@@ -7,12 +7,30 @@ var max = function(a,b){
   return a > b ? a : b;
 };
 
+var pitch_to_midi = function(p){
+  var octave1 = { 
+      c: 24,
+      d: 26,	
+      e: 28,
+      f: 29,
+      g: 31,
+      a: 33,
+      b: 35
+  };
+
+  var note = p[0];
+  var i = Number(p[1]);
+
+  return octave1[note] + (i-1) * 12;
+}
+
+
 var compile_aux = function (musexpr, start0) {
     var note, rest, res1, notes1, start1, res2, notes2, start2;
 
     if(musexpr.tag === 'note'){
         note = { tag:'note', 
-                     pitch: musexpr.pitch,
+                     pitch: pitch_to_midi(musexpr.pitch),
                      start: start0,
                      dur: musexpr.dur
                    };
