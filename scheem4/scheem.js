@@ -1,3 +1,4 @@
+
 if (typeof module !== 'undefined') {
     // In Node load required modules
     var PEG = require('pegjs');
@@ -8,11 +9,23 @@ if (typeof module !== 'undefined') {
     var data = fs.readFileSync('scheem.peg', 'utf-8');
     // Create my parser
     var parse = PEG.buildParser(data).parse;
-    var evalScheemString = function(str) {
-        var expr = parse(str);
-        return evalScheemString(expr, {});
-    }
 }
+/*
+} else {
+    // In browser assume loaded by <script>
+    var parse = SCHEEM.parse;
+    var assert = chai.assert;
+}
+*/
+
+
+
+
+
+
+
+
+
 
 function checkArity(expr, n){
     if(expr.length !== n+1)
@@ -139,7 +152,10 @@ var evalScheem = function (expr, env) {
 
 
 
-
+var evalScheemString = function(str) {
+        var expr = parse(str);
+        return evalScheemString(expr, {});
+}   
 
 
 
@@ -147,4 +163,5 @@ var evalScheem = function (expr, env) {
 // If we are used as Node module, export evalScheem
 if (typeof module !== 'undefined') {
     module.exports.evalScheem = evalScheem;
+    module.exports.evalScheemString = evalScheemString;
 }

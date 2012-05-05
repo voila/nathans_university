@@ -5,7 +5,6 @@ start
     
 validchar
   = [a-zA-Z_?!+\-=@#$%^&*/.]
-  / number
 
 number
   = l:[0-9]* '.' r:[0-9]+  
@@ -18,7 +17,9 @@ whitespace
   / comment
 
 atom
-  = cs:validchar+ { return cs.join(""); }
+  = cs:validchar+ { return cs.join(''); }
+
+   / number
     
 quoteexpr
   = "'" e:expr { return ["quote", e]; }

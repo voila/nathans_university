@@ -39,6 +39,7 @@ SCHEEM = (function(){
       var parseFunctions = {
         "start": parse_start,
         "validchar": parse_validchar,
+        "number": parse_number,
         "whitespace": parse_whitespace,
         "atom": parse_atom,
         "quoteexpr": parse_quoteexpr,
@@ -148,13 +149,136 @@ SCHEEM = (function(){
       function parse_validchar() {
         var result0;
         
-        if (/^[0-9a-zA-Z_?!+\-=@#$%^&*\/.]/.test(input.charAt(pos))) {
+        if (/^[a-zA-Z_?!+\-=@#$%^&*\/.]/.test(input.charAt(pos))) {
           result0 = input.charAt(pos);
           pos++;
         } else {
           result0 = null;
           if (reportFailures === 0) {
-            matchFailed("[0-9a-zA-Z_?!+\\-=@#$%^&*\\/.]");
+            matchFailed("[a-zA-Z_?!+\\-=@#$%^&*\\/.]");
+          }
+        }
+        return result0;
+      }
+      
+      function parse_number() {
+        var result0, result1, result2, result3;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = [];
+        if (/^[0-9]/.test(input.charAt(pos))) {
+          result1 = input.charAt(pos);
+          pos++;
+        } else {
+          result1 = null;
+          if (reportFailures === 0) {
+            matchFailed("[0-9]");
+          }
+        }
+        while (result1 !== null) {
+          result0.push(result1);
+          if (/^[0-9]/.test(input.charAt(pos))) {
+            result1 = input.charAt(pos);
+            pos++;
+          } else {
+            result1 = null;
+            if (reportFailures === 0) {
+              matchFailed("[0-9]");
+            }
+          }
+        }
+        if (result0 !== null) {
+          if (input.charCodeAt(pos) === 46) {
+            result1 = ".";
+            pos++;
+          } else {
+            result1 = null;
+            if (reportFailures === 0) {
+              matchFailed("\".\"");
+            }
+          }
+          if (result1 !== null) {
+            if (/^[0-9]/.test(input.charAt(pos))) {
+              result3 = input.charAt(pos);
+              pos++;
+            } else {
+              result3 = null;
+              if (reportFailures === 0) {
+                matchFailed("[0-9]");
+              }
+            }
+            if (result3 !== null) {
+              result2 = [];
+              while (result3 !== null) {
+                result2.push(result3);
+                if (/^[0-9]/.test(input.charAt(pos))) {
+                  result3 = input.charAt(pos);
+                  pos++;
+                } else {
+                  result3 = null;
+                  if (reportFailures === 0) {
+                    matchFailed("[0-9]");
+                  }
+                }
+              }
+            } else {
+              result2 = null;
+            }
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, l, r) { return parseFloat(l.join('') + '.' + r.join('')); })(pos0, result0[0], result0[2]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        if (result0 === null) {
+          pos0 = pos;
+          if (/^[0-9]/.test(input.charAt(pos))) {
+            result1 = input.charAt(pos);
+            pos++;
+          } else {
+            result1 = null;
+            if (reportFailures === 0) {
+              matchFailed("[0-9]");
+            }
+          }
+          if (result1 !== null) {
+            result0 = [];
+            while (result1 !== null) {
+              result0.push(result1);
+              if (/^[0-9]/.test(input.charAt(pos))) {
+                result1 = input.charAt(pos);
+                pos++;
+              } else {
+                result1 = null;
+                if (reportFailures === 0) {
+                  matchFailed("[0-9]");
+                }
+              }
+            }
+          } else {
+            result0 = null;
+          }
+          if (result0 !== null) {
+            result0 = (function(offset, n) {return parseInt(n.join('')); })(pos0, result0);
+          }
+          if (result0 === null) {
+            pos = pos0;
           }
         }
         return result0;
@@ -194,10 +318,13 @@ SCHEEM = (function(){
           result0 = null;
         }
         if (result0 !== null) {
-          result0 = (function(offset, cs) { return cs.join(""); })(pos0, result0);
+          result0 = (function(offset, cs) { return cs.join(''); })(pos0, result0);
         }
         if (result0 === null) {
           pos = pos0;
+        }
+        if (result0 === null) {
+          result0 = parse_number();
         }
         return result0;
       }

@@ -1,16 +1,18 @@
 if (typeof module !== 'undefined') {
     // In Node load required modules
     var assert = require('chai').assert;
-    var expect = require('chai').expect;
+    var PEG = require('pegjs');
+    var fs = require('fs');
     var evalScheem = require('../scheem').evalScheem;
+    var parse = PEG.buildParser(fs.readFileSync(
+        'scheem.peg', 'utf-8')).parse;
 } else {
-    // In browser assume already loaded by <script> tags
+    // In browser assume loaded by <script>
     var assert = chai.assert;
     var expect = chai.expect;
+    var parse = SCHEEM.parse;
+    
 }
-
-
-
 
 suite('if', function() {
     test('then clause', function() {
