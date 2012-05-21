@@ -1,0 +1,121 @@
+LOOKUP
+
+var lookup = function (env, v) {
+    // Your code here
+    if(env !== {}){
+        var val = env.bindings[v];
+        if(val === undefined)
+            return lookup(env.outer, v);
+        else
+            return val;
+    }
+    else
+        throw new Exception(v + " is unbound!");
+};
+
+EVALSCHEEM
+
+var evalScheem = function (expr, env) {
+    // Numbers evaluate to themselves
+    if (typeof expr === 'number') {
+        return expr;
+    }
+    // Strings are variable references
+    if (typeof expr === 'string') {
+        // New stuff here
+        return lookup(env, expr);
+    }
+    // Look at head of list for operation
+    switch (expr[0]) {
+        case '+':
+            return evalScheem(expr[1], env) +
+                   evalScheem(expr[2], env);
+        case 'let-one':
+            // New stuff here
+            var b = {};
+            b[expr[1]] = evalScheem(expr[2], env);
+            return evalScheem (expr[3], 
+                               {bindings: b,
+                                outer: env});
+    }
+};
+
+
+UPDATE
+
+var update = function (env, v, val) {
+    if(env !== {}){
+        if(env.bindings[v]===undefined)
+            return update(env.outer, v, val);
+        else
+            env.bindings[v] = val;
+    }
+    else
+        throw new Exception(v + " is unbound!");
+};
+
+
+APPLICATION
+
+var evalScheem = function (expr, env) {
+    if (typeof expr === 'number') {
+        return expr;
+    }
+    if (typeof expr === 'string') {
+        return lookup(env, expr);
+    }
+    // Look at head of list for operation
+    switch (expr[0]) {
+        case '+':
+            return evalScheem(expr[1], env) +
+                   evalScheem(expr[2], env);
+        case 'quote':
+            return expr[1];
+        default:
+            // function application
+            var fun = evalScheem(expr[0], env);
+            var arg = evalScheem(expr[1], env);
+            return fun(arg);
+    }
+};
+
+
+LAMBDA-ONE
+
+var evalScheem = function (expr, env) {
+    if (typeof expr === 'number') {
+        return expr;
+    }
+    if (typeof expr === 'string') {
+        return lookup(env, expr);
+    }
+    // Look at head of list for operation
+    switch (expr[0]) {
+        case '+':
+            return evalScheem(expr[1], env) +
+                   evalScheem(expr[2], env);
+        case 'lambda-one':
+            return function (_arg){
+                var new_env = {};
+                new_env[expr[1]] = _arg;
+                return evalScheem(expr[2],
+                                  {bindings:new_env,
+                                   outer: env});
+                
+            };
+        default:
+            // Simple application
+            var func = evalScheem(expr[0], env);
+            var arg = evalScheem(expr[1], env);
+            return func(arg);
+    }
+};
+
+
+RECURSION
+
+var add_binding = function (env, v, val) {
+    // Your code here
+    env = { bindings: env.bindings[v]= val, 
+           outer: env.outer};
+};

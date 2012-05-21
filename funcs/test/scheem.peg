@@ -1,0 +1,36 @@
+/*** Borrowed from https://github.com/weihsiu/PL101/blob/master/src/scheem.pegjs ***/
+
+start
+  = whitespace* e:expr whitespace* { return e; }
+    
+validchar
+  = [a-zA-Z_?!+\-=@#$%^&*/.]
+  / number
+
+number
+  = l:[0-9]* '.' r:[0-9]+  
+    { return parseFloat(l.join('') + '.' + r.join('')); }
+  / n:[0-9]+ 
+    {return parseInt(n.join('')); }
+
+whitespace
+  = [ \t\r\n]
+  / comment
+
+atom
+  = cs:validchar+ { return cs.join(""); }
+    
+quoteexpr
+  = "'" e:expr { return ["quote", e]; }
+
+spaceexpr
+  = whitespace+ e:expr { return e; }
+    
+exprlist
+  = "(" whitespace* e:expr es:spaceexpr* whitespace* ")" { es.unshift(e); return es; }
+    
+comment
+  = ";;" [^\r\n]*
+
+expr
+  = atom / quoteexpr / exprlist
