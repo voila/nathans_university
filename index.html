@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Nathans university : " />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+  <script src="scheem4/scheem.js"></script>
+  <script src="scheem4/parser.js"></script>
+    <title>Nathans university</title>
+
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/voila/nathans_university">View on GitHub</a>
+
+          <h1 id="project_title">Nathans university</h1>
+          <h2 id="project_tagline"></h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/voila/nathans_university/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/voila/nathans_university/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h3>Lesson 4: Scheem</h3>
+
+<textarea id="input" style="width:800px; height:300px;">
+(+ 1 2)</textarea>
+
+<input id="submitbutton" type="button" value="Run" />
+
+<div id="console" class="console" style="border:solid 1px;">
+<p>This is where output goes.</p>
+</div>
+
+<script>
+  // Utility function to log messages
+  var log_console = function(msg) {
+      $('#console').append('<p>' + msg + '</p>');
+  };
+  // After page load
+  $(function() {
+    $('#submitbutton').click(function() {
+        var user_text = $('#input').val();
+        $('#console').html(''); // clear console
+        log_console('Your input was: "' + user_text + '"');
+        try {
+            var parsed = SCHEEM.parse(user_text);
+            log_console('Parsed: ' + JSON.stringify(parsed));
+            try {
+                var result = evalScheem(parsed, {});
+                log_console('Result: ' + JSON.stringify(result));
+            }
+            catch(e) {
+                log_console('Eval Error: ' + e);
+            }
+        }
+        catch(e) {
+            log_console('Parse Error: ' + e);
+        }
+    });
+  });
+</script>
+
+
+
+
+
+
+      <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Nathans university maintained by <a href="https://github.com/voila">voila</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
