@@ -8,8 +8,8 @@
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  <script src="scheem4/scheem.js"></script>
-  <script src="scheem4/parser.js"></script>
+  <script src="funcs/scheem.js"></script>
+  <script src="funcs/parser.js"></script>
     <title>Nathans university</title>
 
   </head>
@@ -34,10 +34,17 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <h3>Lesson 4: Scheem</h3>
+        <h3>Lesson 5: Functions</h3>
 
 <textarea id="input" style="width:800px; height:300px;">
-(+ 1 2)</textarea>
+(begin
+  (define fac
+    (lambda-one (x) 
+      (if (= 1 x) 
+          1
+          (* x (fac (- x 1))))))
+  (fac 5))
+</textarea>
 
 <input id="submitbutton" type="button" value="Run" />
 
@@ -60,7 +67,7 @@
             var parsed = SCHEEM.parse(user_text);
             log_console('Parsed: ' + JSON.stringify(parsed));
             try {
-                var result = evalScheem(parsed, {});
+                var result = evalScheem(parsed, env0);
                 log_console('Result: ' + JSON.stringify(result));
             }
             catch(e) {
