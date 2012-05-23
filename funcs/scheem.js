@@ -44,7 +44,13 @@ if (typeof module !== 'undefined') {
 
 
 
+function checkSupEqual(x, y, msg){
+    if(x < y) throw (msg + " " + x + " < " + y);
+}
 
+function checkEqual(x, y, msg){
+    if(x !== y) throw (msg + " " + x + " !== " + y);
+}
 
 function checkArity(expr, n){
     if(expr.length !== n+1)
@@ -162,6 +168,13 @@ var evalScheem = function (expr, env) {
             new_env[expr[1]] = expr[2];
             return evalScheem(expr[3], {bindings: new_env, outer: env});
 
+        case 'let': // (let ((x 8) (y 9)) let-body)
+            var new_env = {};
+            for(var i=0; i < expr[1].length; i++){
+                new_env[expr[1][i][0]] = evalScheem(expr[1][i][1],env);
+            }
+            return evalScheem(expr[2], {bindings: new_env, outer: env});
+
         case 'lambda-one':
             checkArity(expr, 2);
             return function (_arg){
@@ -172,18 +185,20 @@ var evalScheem = function (expr, env) {
                                    outer: env});
                 
             };
-/*
+
        case 'lambda':
-            checkArity(expr, 2);
-            return function (_arg){
+            // checkArity(expr, 2);
+            return function (){
+                checkEqual(expr[1].length, arguments.length, 
+                           "Wrong number of arguments")
                 var new_env = {};
-                new_env[expr[1]] = _arg;
+                for(var i=0; i < expr[1].length; i++){
+                    new_env[expr[1][i]] = arguments[i];
+                }
                 return evalScheem(expr[2],
                                   {bindings:new_env,
                                    outer: env});
-                
             };
-*/
 
 
         default:
@@ -199,17 +214,26 @@ var evalScheem = function (expr, env) {
     }
 };
 
-
+var variadic = function(binop){
+    return function(){
+        checkSupEqual(arguments.length, 2, "Wrong number of arguments");
+        var res = arguments[0];
+        for(var i=1; i<arguments.length; i++){
+            res = binop(res, arguments[i]);
+        }
+        return res;
+    }
+};
 
 var env0 = {
     bindings: {
         // Arithmetic operators
         '~': function(x){ return -x; },
-        '+': function(x,y){ return x + y; },
-        '-': function(x,y){ return x - y; },
-        '*': function(x,y){ return x * y; },
-        '/': function(x,y){ return x / y; },
-        '**': function(x,y){ return Math.pow(x,y); },
+        '+': variadic(function(x,y){ return x + y; }),
+        '-': variadic(function(x,y){ return x - y; }),
+        '*': variadic(function(x,y){ return x * y; }),
+        '/': variadic(function(x,y){ return x / y; }),
+        '**': variadic(function(x,y){ return Math.pow(x,y); }),
         // Predicates
         '=': function(x,y){ return x === y ? '#t' : '#f'; },
         '/=': function(x,y){ return x !== y ? '#t' : '#f'; },
