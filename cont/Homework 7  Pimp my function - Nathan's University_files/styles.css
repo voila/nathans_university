@@ -1,0 +1,55 @@
+.geshi_syntax {
+	color: #100;
+	margin: 0;
+	overflow: hidden !important;
+	background: #fbfeff;
+	border: 1px solid #dfe3e5;
+	}
+   
+	.geshi_syntax:hover {
+		background: #fbfeff;
+		border: 1px solid #ccc; 
+		box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+		-webkit-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+		-moz-box-shadow: 2px 2px 3px rgba(0,0,0,0.3);
+		}
+
+/* IE FIX */
+.geshi_syntax {
+	overflow-x: auto;
+	overflow-y: hidden;
+	padding-bottom: expression(this.scrollWidth > this.offsetWidth ? 15 : 0);
+	width: 100%;
+	}
+
+.geshi_syntax table {
+	border-collapse: collapse;
+	}
+
+.geshi_syntax div, .geshi_syntax td {
+	vertical-align: top;
+	padding: 2px 4px;
+	}
+
+.geshi_syntax .line_numbers {
+	text-align: right;
+	background-color: #def;
+	color: gray;
+	overflow: visible;
+	}
+
+/* potential overrides for other styles */
+.geshi_syntax pre {
+	margin: 0;
+	width: auto;
+	float: none;
+	clear: none;
+	overflow: visible !important;
+	font-size: 12px;
+	line-height: 1.333;
+	white-space: pre;
+	background: none !important;
+	border: 0 !important;
+	}
+	
+div.Popup div.Preview .geshi_syntax { margin: 1em 0; }
